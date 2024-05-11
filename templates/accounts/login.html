@@ -22,8 +22,8 @@
         {{ form | crispy}}
         <button type="submit">Login</button>
       </form>
-      <p class="col-sm-10 lead">If you don't have an account, please <a href="{% url 'accounts:registration' %}">Register</a>
-        or if you have forgotten your password click here: <a href="{% url 'accounts:password_reset' %}">Forgot Password</a>
+      <p class="col-sm-10 lead">If you don't have an account, please <a href="{% url 'accounts:register' %}">Register</a>
+        or if you have forgotten your password click here: <a href="{% url 'accounts:password:password_reset' %}">Forgot Password</a>
       </p>
     </div>
 </div>

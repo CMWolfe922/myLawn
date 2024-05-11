@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}My Lawn | Logout{% endblock %}
+{% block header %}Logout of Account{% endblock %}
+<!-- Create a logout html file -->
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Logout of My Lawn Account</h2>
+    </div>
+    <div class="card-body">
+        {% if user.is_authenticated %}
+        <form action="post">
+            {% csrf_token %}
+            {% form | crispy %}
+
+            <a href="{% url 'home' %}"><button type="submit" class="btn btn-primary">Logout</button></a>
+        </form>
+        {% else %}
+        <p>You are not logged in. You need to login.</p>
+        <a href="{% url 'accounts:login' %}">Login</a>
+        {% endif %}
+    </div>
+</div>
+
+{% block content %}

@@ -61,10 +61,10 @@ class Logout(LogoutView):
     
     
 class PasswordReset(PasswordResetView):
-    template_name = 'accounts/password_reset.html'
+    template_name = 'accounts/password/password_reset.html'
     form_class = PasswordResetForm
-    email_template_name = 'accounts/password_reset_email.html'
-    subject_template_name = 'accounts/password_reset_subject.txt'
+    email_template_name = 'accounts/password/password_reset_email.html'
+    subject_template_name = 'accounts/password/password_reset_subject.txt'
     success_url = reverse_lazy('password_reset_done')
     
     def form_valid(self, form):
@@ -80,7 +80,7 @@ class PasswordResetDone(PasswordResetDoneView):
         return reverse_lazy('password_reset_done')
     
 class PasswordResetConfirm(PasswordResetConfirmView):
-    template_name = 'accounts/password_reset_confirm.html'
+    template_name = 'accounts/password/password_reset_confirm.html'
     form_class = SetPasswordForm
     success_url = reverse_lazy('password_reset_complete')
     
@@ -91,13 +91,13 @@ class PasswordResetConfirm(PasswordResetConfirmView):
         return reverse_lazy('password_reset_complete')
     
 class PasswordResetComplete(PasswordResetCompleteView):
-    template_name = 'accounts/password_reset_complete.html'
+    template_name = 'accounts/password/password_reset_complete.html'
     
     def get_success_url(self):
         return reverse_lazy('password_reset_complete')
     
 class PasswordChange(PasswordChangeView):
-    template_name = 'accounts/password_change.html'
+    template_name = 'accounts/password/password_change.html'
     form_class = PasswordChangeForm
     success_url = reverse_lazy('password_change_done')
     
@@ -108,7 +108,7 @@ class PasswordChange(PasswordChangeView):
         return reverse_lazy('password_change_done')
     
 class PasswordChangeDone(PasswordChangeDoneView):
-    template_name = 'accounts/password_change_done.html'
+    template_name = 'accounts/password/password_change_done.html'
     
     def get_success_url(self):
         return reverse_lazy('password_change_done')

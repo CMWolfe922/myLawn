@@ -161,7 +161,25 @@ STATICFILES_DIRS = BASE_DIR / "static"
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+# CRISPY FORMS SETTINGS
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+# IMAGEKIT SETTINGS
+IMAGEKIT_CACHEFILE_DIR = "cache"
+IMAGEKIT_CACHEFILE_BACKEND = "imagekit.cachefiles.backends.Simple"
+IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = "imagekit.cachefiles.strategies.Optimistic"
+IMAGEKIT_DEFAULT_CACHEFILE_BACKEND = "imagekit.cachefiles.backends.Simple"
+
+# DJANGO EXTENSIONS SETTINGS
+SHELL_PLUS = "ipython"
+SHELL_PLUS_PRINT_SQL = True
+
+# DJANGO FILTERS SETTINGS
+DJANGO_FILTERS_HELP_TEXT_FILTER = False
+
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 

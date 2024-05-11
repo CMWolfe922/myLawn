@@ -1,10 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
 
-</body>
-</html>
+{% block title %}Account{% endblock %}
+{% block header %}My Lawn Account{% endblock %}
+<div class="card col-sm-pull-4" id="account-card">
+    <div class="card-img">
+        <img src="{% static 'images/mylawnlogo.jpg' %}" alt="My Lawn Logo" class="img-fluid">
+    </div>
+    <div class="card-header">
+        <h2 class="card-title">My Lawn Account Page</h2>
+        <div class="card-body">
+            <p class="text-primary">
+                Display account information here in the form of Cards
+            </p>
+            <!-- Add user information -->
+            <div class="card-footer" id="account-card-user-information">
+                <h3 class="card-title">User Information</h3>
+                <div class="card-body">
+                    <p class="card-text">User Name: {{ user.username }}</p>
+                    <p class="card-text">Email: {{ user.email }}</p>
+                    <p class="card-text">First Name: {{ user.first_name }}</p>
+                    <p class="card-text">Last Name: {{ user.last_name }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block content %}
