@@ -20,7 +20,10 @@ from .models import NewUser
 
 from dotenv import load_dotenv
 
-
+def get_account_url():
+    """This function returns the URL for the account page
+    """
+    return reverse_lazy('accounts/account.html')
 
 def register(request):
     if request.method == "POST":
@@ -28,7 +31,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('map')  # or your own view
+            return redirect('accounts/account.html')  # or your own view
     else:
         form = UserCreationForm()
     return render(request, 'accounts/register.html', {'form': form})
@@ -44,7 +47,7 @@ class Login(LoginView):
         fields = ["email", "password"]
         
     def get_success_url(self):
-        return reverse_lazy('profile')
+        return reverse_lazy('accounts/account.html')
     
     
 def profile(request):

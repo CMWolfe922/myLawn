@@ -5,4 +5,92 @@
 {% block title %}My Lawn | Home{% endblock %}
 {% block header %}<h1 class="display-1">My Lawn Company</h1>{% endblock %}
 
+
 {% block content %}
+{% if user.is_authenticated %}
+<div class="row row-cols-sm-auto">
+    <div class="col-sm-4 accordion-header">
+        <h2 class="display-2">MY LAWN COMPANY</h2>
+        <br>
+        <hr class="divider">
+        <p class="lead">View Latest News and Updates Below:</p>
+    </div>
+</div>
+
+<!-- ROW 2 COLUMN 1-->
+<div class="row row-cols-sm-auto">
+    <div class="col-sm-4 accordion-item">
+        <span>
+            <div class="theme-label-when-auto">
+                <p>Want to logout? Click here:</p>
+            </div>
+            <div class="col-sm-10">
+                <a href="{% url 'accounts:logout' %}" class="button">Logout</a>
+            </div>
+        </span>
+    </div>
+    <!-- ROW 2 COLUMN 2-->
+    <div class="col-sm-4 accordion-item">
+        <span>
+            <div class="theme-label-when-auto">
+                <p>Want to change your password? Click here:</p>
+            </div>
+            <div class="col-sm-10">
+                <a href="{% url 'accounts:password_change' %}" class="button accordion-button">Change Password</a>
+            </div>
+        </span>
+    </div>
+</div>
+
+    <!-- ROW 3 COLUMN 1-->
+<div class="row-cols-auto">
+    <div class="card-group col-sm-pull-4">
+        <!-- FIRST CARD IN CARD GROUP -->
+        <div class="card">
+            <div class="card-img-top">
+                <img src="{% static 'images/mylawnlogo.jpg' %}" alt="My Lawn Logo" class="img-fluid">
+            </div>
+            <div class="card-header">
+                <h2 class="card-title">My Lawn Company</h2>
+            </div>
+            <div class="card-body">
+                <p class="lead alert-info">
+                    View upcoming services and bills by checking your account.
+                    Or, logout if you are done.
+                </p>
+                <span>
+                    <div class="nav-list inline-group align-content-sm-stretch">
+                        <ul>
+                            <li><a href="{% url 'accounts:profile' %}">{{ user.username }} Profile</a></li>
+                            <li><a href="{% url 'accounts:account' %}">{{ user.username }} Account</a></li>
+                            <li><a href="{% url 'accounts:logout' %}">{{ user.username }} Logout</a></li>
+                        </ul>
+                    </div>
+                </span>
+            </div>
+        </div>
+        <!-- SECOND CARD IN GROUP -->
+        <div class="card">
+            <div class="card-img-top">
+                <img src="{% static 'images/logos/mylawnlogo.jpg' %}" alt="My Lawn Logo" class="img-fluid">
+            </div>
+            <div class="card-header">
+                <h2 class="card-title">My Lawn User Feed</h2>
+            </div>
+            <div class="card-body">
+                <p class="lead alert-info">
+                    View User feed and social media posts here.
+                </p>
+                <span>
+                    <div class="nav-list inline-group align-content-sm-stretch">
+                        <ul>
+                            <li>{{ user.username }} Eventually their will be posts here</a></li>
+                            <li>{{ user.username }} Posts with links to Twitter</a></li>
+                            <li>{{ user.username }} and posts to facebook</a></li>
+                        </ul>
+                    </div>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

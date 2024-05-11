@@ -1,7 +1,7 @@
 from django.urls import include, path
 from django.contrib.auth.models import User
 from django.urls.base import reverse_lazy, reverse, resolve
-from .views import register, Login, profile, Logout, PasswordReset
+from .views import register, Login, profile, Logout, PasswordReset, get_account_url
 
 urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),  # existing
@@ -9,6 +9,7 @@ urlpatterns = [
     path('accounts/', Login.as_view(), name='login'),
     path('accounts/', profile, name='profile'),
     path('accounts/', Logout.as_view(), name='logout'),
+    path('accounts/', get_account_url, name='account'),
     path('accounts/password/', PasswordReset.as_view(), name='password_reset'),
     path('accounts/password/', PasswordReset.as_view(), name='password_reset_done'),
 ]

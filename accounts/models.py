@@ -14,6 +14,7 @@ from django.urls.base import reverse_lazy, reverse, resolve
 def create_profile(sender, **kwargs):
     if kwargs["created"]:
         user_profile = Profile.objects.create(user=kwargs["instance"])
+        user_profile.save()
 @receiver(post_save, sender=create_profile)
 class NewUser(models.Model, AbstractBaseUser):
     first_name = models.CharField(max_length=30)
@@ -107,7 +108,7 @@ class Customer(models.Model):
     address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
     under_contract = models.BooleanField(default=False)
-    profile_pic = models.ImageField(default="default.jpg", upload_to="profile_pics")
+    profile_pic = models.ImageField(default="images/defaults/greenish_blue_filled_person_icon.png", upload_to="profile_pics")
     
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
@@ -190,10 +191,14 @@ def upload_profile_pics(instance, filename):
 
 @receiver(post_save, sender=NewUser)
 class Profile(models.Model, PermissionRequiredMixin, LoginRequiredMixin):
+    profile_type = models.CharField(choices=[("customer", "Customer"), ("employee", "Employee")], max_length=10, blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
     profile_pic = models.ImageField(default="default.jpg", upload_to=upload_profile_pics)
     user = models.OneToOneField(NewUser, on_delete=models.CASCADE, primary_key=True)
     address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True)
+    yard = models.ForeignKey(Yard, on_delete=models.CASCADE, blank=True, null=True)
+    route = models.ForeignKey(Route, on_delete=models.CASCADE, blank=True, null=True)
+    
     
     def __str__(self):
         return f"Profile created for: {self.user.username} which belongs to {self.user.first_name} {self.user.last_name}"
