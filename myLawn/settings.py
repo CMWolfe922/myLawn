@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,17 +39,40 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
+    "django.contrib.humanize",
+    "django.contrib.sitemaps",
+    "django.contrib.flatpages",
+    "django.contrib.gis",
 
     # Used Apps
     "accounts",
+    "lawn_manager",
     "crispy_forms",
     "crispy_bootstrap5",
     "django_extensions",
+    "django_filters",
+    "imagekit",
+    
+    # Rest Framework Apps
+    # "rest_framework",
+    # "rest_framework.authtoken",
+    # "rest_framework_gis",
+    # "rest_framework_swagger",
+    # "rest_framework_simplejwt",
+    # "rest_framework_simplejwt.token_blacklist",
+    # "rest_framework_simplejwt.token_blacklist.models",
+    # "rest_framework_simplejwt.token_blacklist.admin",
+    # "rest_framework_simplejwt.token_blacklist.serializers",
+    # "rest_framework_simplejwt.token_blacklist.views",
+    # "rest_framework_simplejwt.token_blacklist.urls",
+    # "rest_framework_simplejwt.token_blacklist.management",
+    # "rest_framework_simplejwt.token_blacklist.management.commands",
+    # "rest_framework_simplejwt.token_blacklist.signals",
 
     # Third party apps
-    # "rest_framework",
-    # "django_cleanup",
-    # "django_filters",
+    "django_cleanup",
+    
 ]
 
 MIDDLEWARE = [
@@ -88,6 +113,10 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "MyLawn.db",
+    },
+    "gis_db": {
+        "ENGINE": "django.contrib.gis.db.backends.spatialite",
+        "NAME": "mylawngis.db",
     }
 }
 
@@ -138,6 +167,7 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+AUTH_USER_MODEL = "accounts.NewUser"
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',

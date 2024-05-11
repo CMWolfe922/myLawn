@@ -35,8 +35,3 @@ class Review(models.Model):
 
     def __str__(self):
         return self.lawn.name + " - " + str(self.rating) + " stars"
-
-# Path: lawn_manager/admin.py
-from django.contrib import admin
-from .models import Place, Lawn, Booking, Review
-
