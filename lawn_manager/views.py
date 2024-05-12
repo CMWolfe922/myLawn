@@ -5,6 +5,8 @@ from .models import Place
 from django.core.serializers import serialize
 from django.contrib.auth.decorators import login_required
 from .models import Lawn, Booking, Review, Place
+from accounts.models import Address, Yard, Route, Employee, Customer, Profile
+from accounts.forms import UserForm, UserTypeForm, AddressForm, YardForm, RouteForm, EmployeeForm, CustomerForm, ProfileForm
 
 
 @login_required
@@ -54,3 +56,19 @@ def create_review(request):
         )
         return render(request, "lawn_manager/review_confirmation.html", {"review": review})
     return render(request, "lawn_manager/home.html")
+
+def set_yard_and_address(request):
+    if request.method == "POST":
+        address_form = AddressForm(request.POST)
+        if address_form.is_valid():
+            address = address_form.save()
+        yard_form = YardForm(request.POST)
+        if yard_form.is_valid():
+            yard = yard_form.save(commit=False)
+            yard.address = address
+            yard.save()
+        context = {
+            "address_form": address_form,
+            "yard_form": yard_form
+        }
+        return render(request, "lawn_manager/set_yard_and_address.html", context=context)

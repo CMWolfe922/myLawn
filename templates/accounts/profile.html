@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}My Lawn | Profile{% endblock %}
+
+{% block header %}<h1 class="display-1">My Lawn: User Profile</h1>{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<div class="row row-cols-sm-auto">
+    <div class="col-sm-4 accordion-header">
+        <h2 class="display-2">MY LAWN PROFILE</h2>
+        <br>
+        <hr class="divider">
+        <p class="lead">View your profile below:</p>
+    </div>
+</div>
+<!-- ROW 2 COLUMN 1-->
+<div class="row row-cols-sm-auto">
+    <div class="col-sm-4 accordion-item">
+        <span>
+            <div class="theme-label-when-auto">
+                <p>Want to logout? Click here:</p>
+            </div>
+            <div class="col-sm-10">
+                <a href="{% url 'accounts:logout' %}" class="button">Logout</a>
+            </div>
+        </span>
+    </div>
+    <!-- ROW 2 COLUMN 2-->
+    <div class="col-sm-4 accordion-item">
+        <span>
+            <div class="theme-label-when-auto">
+                <p>Want to change your password? Click here:</p>
+            </div>
+            <div class="col-sm-10">
+                <a href="{% url 'accounts:password_change' %}" class="button">Change Password</a>
+            </div>
+        </span>
+    </div>
+</div>
+<!-- ROW 3 COLUMN 1-->
+<div class="row-cols-auto">
+    <div class="card-group col-sm-pull-4">
+        <!-- FIRST CARD IN CARD GROUP -->
+        <div class="card">
+            <div class="card-img-top">
+                <img src="{{ user.profile.profile_picture }}" alt="User's profile picture or the default picture" class="img-fluid">
+            </div>
+            <div class="card-header">
+                <h2 class="card-title">My Lawn Profile</h2>
+            </div>
+            <div class="card-body">
+                <span>
+                    <div class="nav-list inline-group align-content-sm-stretch">
+                        <ul>
+                            <li><a href="{% url 'accounts:profile' %}">Profile</a></li>
+                            <li><a href="{% url 'accounts:account' %}">Account</a></li>
+                            <li><a href="{% url 'accounts:logout' %}">Logout</a></li>
+                            <li><a href="{% url 'lawn_manager:set_yard_and_address' %}">Update Address</a></li>
+                            <li><a href="{% url 'lawn_manager:set_yard_and_address' %}">Update Yard</a></li>
+                            <li><a href="{% url 'accounts:logout' %}">Update Route</a></li>
+                        </ul>
+
+                    </div>
+                </span>
+                <p class="text-primary">
+                    Display account information here in the form of Cards:
+                </p>
+                <div>
+
+                </div>
+
+                <div class="card-footer">
+                    <h3 class="card-title">User Information</h3>
+                    <div class="card-body">
+                        <p class="card-text">User Name: {{ user.username }}</p>
+                        <p class="card-text">Email: {{ user.email }}</p>
+                        <p class="card-text">First Name: {{ user.first_name }}</p>
+                        <p class="card-text">Last Name: {{ user.last_name }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+{% endblock %}

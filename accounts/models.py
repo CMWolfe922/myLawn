@@ -193,7 +193,7 @@ def upload_profile_pics(instance, filename):
 class Profile(models.Model, PermissionRequiredMixin, LoginRequiredMixin):
     profile_type = models.CharField(choices=[("customer", "Customer"), ("employee", "Employee")], max_length=10, blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
-    profile_pic = models.ImageField(default="default.jpg", upload_to=upload_profile_pics)
+    profile_pic = models.ImageField(default="images/defaults/grey_default_profile_pic.png", upload_to=upload_profile_pics)
     user = models.OneToOneField(NewUser, on_delete=models.CASCADE, primary_key=True)
     address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True)
     yard = models.ForeignKey(Yard, on_delete=models.CASCADE, blank=True, null=True)

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}Build Yard and Address{% endblock %}
+{% block header %}Build Yard and Address{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <!-- Check if user is authenticated. Then check  -->
+    <div class="row">
+        <div class="col-sm-12">
+            <h2 class="display-2">Build Yard and Address</h2>
+            <p class="lead">Please enter your yard and address information</p>
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Address Information</h2>
+            </div>
+            <div class="card-body">
+                <p class="lead">Please enter your address information below:</p>
+
+                <form method="post" class="form form-floating" id="address-form">
+                    {% csrf_token %}
+                    {{ address_form | crispy}}
+                    <button class="btn-outline-dark" type="submit">Add Address</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Yard Information</h2>
+                </div>
+                <div class="card-body">
+                    <form action="POST">
+                        {% csrf_token %}
+                        {{ yard_form | crispy}}
+                        <button class="btn-outline-dark" type="submit">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
