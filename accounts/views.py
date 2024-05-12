@@ -52,7 +52,17 @@ class Login(LoginView):
     
 def profile(request):
     """This just renders the profile page for the user
+    
+    :Functions: Add all the logic to let the user upload their own profile picture, 
+    change their password, and update their account information. Allow them 
+    to create an address, and add a yard to their account.
     """
+    if request.method == "POST":
+        form = UserChangeForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    
     return render(request, 'accounts/profile.html')
 
 class Logout(LogoutView):
