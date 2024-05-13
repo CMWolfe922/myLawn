@@ -8,79 +8,45 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.shortcuts import render, redirect
 from django.urls.base import reverse_lazy, reverse, resolve
+from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
 
-# Create your models here.
-def create_profile(sender, **kwargs):
-    if kwargs["created"]:
-        user_profile = Profile.objects.create(user=kwargs["instance"])
-        user_profile.save()
-@receiver(post_save, sender=create_profile)
-class NewUser(models.Model, AbstractBaseUser):
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    email = models.EmailField(verbose_name="email", max_length=60, unique=True)
-    phone_number = models.CharField(max_length=12, unique=True, blank=True)
-    username = models.CharField(max_length=30, unique=True)
-    date_joined = models.DateTimeField(verbose_name="date joined", auto_now_add=True)
-    last_login = models.DateTimeField(verbose_name="last login", auto_now=True)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-    is_admin = models.BooleanField(default=False)
-    is_employee = models.BooleanField(default=False)
-    is_customer = models.BooleanField(default=False)
-
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["first_name", "last_name", "username", "email", "phone_number"]
-
-    def __str__(self):
-        return self.email
-
-    def has_perm(self, perm, obj=None):
-        return self.is_admin
-
-    def has_module_perms(self, app_label):
-        return True
-    
-    
 class NewUserManager(BaseUserManager):
-    def create_user(self, first_name, last_name, username, email, phone_number, password=None):
+    # Define methods for creating user and superuser
+    def create_user(self, email, password=None, **extra_fields):
+        # Ensure email is provided
         if not email:
-            raise ValueError("Users must have an email address")
-        if not username:
-            raise ValueError("Users must have a username")
-        if not first_name:
-            raise ValueError("Users must have a first name")
-        if not last_name:
-            raise ValueError("Users must have a last name")
-        if not phone_number:
-            raise ValueError("Users must have a phone number")
-
-        user = self.model(
-            email=self.normalize_email(email),
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            phone_number=phone_number,
-        )
-
+            raise ValueError('The Email must be set')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, first_name, last_name, username, email, phone_number, password):
-        user = self.create_user(
-            email=self.normalize_email(email),
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            phone_number=phone_number,
-            password=password,
-        )
-        user.is_admin = True
-        user.is_staff = True
-        user.save(using=self._db)
-        return user
+    def create_superuser(self, email, password, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        return self.create_user(email, password, **extra_fields)
+
+class NewUser(AbstractBaseUser):
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    phone_number = models.CharField(max_length=12)
+    
+    email = models.EmailField(unique=True)
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+
+    objects = NewUserManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    def __str__(self):
+        return self.email
+
 
 class Address(models.Model):
     user = models.ForeignKey(NewUser, on_delete=models.CASCADE)
@@ -114,7 +80,7 @@ class Customer(models.Model):
         return f"{self.user.first_name} {self.user.last_name}"
 
 
-class Employee(models.Model, PermissionRequiredMixin, LoginRequiredMixin):
+class Employee(models.Model):
     user = models.OneToOneField(NewUser, on_delete=models.CASCADE, primary_key=True)
     address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
@@ -127,7 +93,7 @@ def upload_yard_pics(instance, filename):
     return f"uploads/yard_pics/{instance.customer.user.pk}_{instance.customer.user.username}_{filename}"    
 
 @receiver(post_save, sender=Customer.user)
-class Yard(models.Model, PermissionRequiredMixin, LoginRequiredMixin):
+class Yard(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
     size = models.FloatField(max_length=10)
@@ -157,7 +123,7 @@ def upload_job_pics(instance, filename):
     return f"uploads/job_pics/{instance.employee.user.pk}_{instance.employee.user.username}_{filename}"
 
 
-class Route(models.Model, PermissionRequiredMixin, LoginRequiredMixin):
+class Route(models.Model):
     route_id = models.CharField(primary_key=True, max_length=5, unique=True, blank=False, null=False)
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     yards = models.ManyToManyField(Yard)
@@ -190,7 +156,7 @@ def upload_profile_pics(instance, filename):
     return f"uploads/profile_pics/{instance.user.pk}_{instance.user.username}_{filename}"
 
 @receiver(post_save, sender=NewUser)
-class Profile(models.Model, PermissionRequiredMixin, LoginRequiredMixin):
+class Profile(models.Model):
     profile_type = models.CharField(choices=[("customer", "Customer"), ("employee", "Employee")], max_length=10, blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
     profile_pic = models.ImageField(default="default.jpg", upload_to=upload_profile_pics)
@@ -205,4 +171,3 @@ class Profile(models.Model, PermissionRequiredMixin, LoginRequiredMixin):
 
     def get_absolute_url(self):
         return reverse("profile", kwargs={"pk": self.pk})
-    

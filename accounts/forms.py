@@ -81,6 +81,11 @@ class YardUpdateForm(forms.ModelForm):
 
 class RouteUpdateForm(forms.ModelForm):
     
+    def get_updated_route_id(self):
+        return self.instance.route_id
+    
+    def set_updated_route_id(self, route_id):
+        self.instance.route_id = route_id
     class Meta:
         model = Route
         fields = ["route_id", "route_name", "route_address", "route_notes"] 

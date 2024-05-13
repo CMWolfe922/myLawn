@@ -46,8 +46,8 @@ INSTALLED_APPS = [
     "django.contrib.gis",
 
     # Used Apps
-    "accounts",
-    "lawn_manager",
+    "accounts.apps.AccountsConfig",
+    "lawn_manager.apps.LawnManagerConfig",
     "crispy_forms",
     "crispy_bootstrap5",
     "django_extensions",
@@ -74,6 +74,8 @@ INSTALLED_APPS = [
     "django_cleanup",
     
 ]
+
+AUTH_USER_MODEL = 'accounts.NewUser'
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -185,9 +187,10 @@ DJANGO_FILTERS_HELP_TEXT_FILTER = False
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTH_USER_MODEL = "accounts.NewUser"
+
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
+    'accounts.backends.EmailBackend',
 ]
 
