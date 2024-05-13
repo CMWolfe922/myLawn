@@ -1,12 +1,11 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
 from django.db import models as db_models
 from django.db.models import fields as db_fields
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
-from .models import NewUser, Profile, Address, Customer, Yard, Route, Employee
-
+from .models import Address, Customer, Yard, Route, Employee
+from .models import NewUser, Profile
 # first thing I am doing is creating a login form
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=100)
@@ -54,7 +53,7 @@ class CustomerForm(forms.ModelForm):
     class Meta:
         model = Customer
         fields = ["notes", "profile_pic"]
-        
+
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile

@@ -29,30 +29,29 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
+GDAL_LIBRARY_PATH = "C:\\OSGeo4W\\bin\\gdal306.dll"  #os.environ.get('GDAL_306_PATH') or os.environ.get('GDAL_LIBRARY_PATH') or os.environ.get('GDAL_SPATIALITE_PATH') or os.environ.get('GDAL_PLUGINS') or os.environ.get("GDAL_BATCH")
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    "django.contrib.sites",
-    "django.contrib.humanize",
-    "django.contrib.sitemaps",
-    "django.contrib.flatpages",
-    "django.contrib.gis",
-
+    # Other installed apps
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'django.contrib.gis',
+    'django.contrib.sites',
+    
+    'accounts.apps.AccountsConfig',
+    "lawn_manager.apps.LawnManagerConfig",
+    
     # Used Apps
-    "accounts",
-    "lawn_manager",
-    "crispy_forms",
-    "crispy_bootstrap5",
-    "django_extensions",
-    "django_filters",
-    "imagekit",
+    # "crispy_forms",
+    # "crispy_bootstrap5",
+    # "django_extensions",
+    # "django_filters",
+    # "imagekit",
     
     # Rest Framework Apps
     # "rest_framework",
@@ -74,6 +73,8 @@ INSTALLED_APPS = [
     "django_cleanup",
     
 ]
+
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

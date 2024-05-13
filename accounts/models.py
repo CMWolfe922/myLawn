@@ -1,48 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 # Create permission mixins
-from django.contrib.auth.models import PermissionsMixin
-from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin, UserPassesTestMixin, AccessMixin
+# from django.contrib.auth.models import PermissionsMixin
+# from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin, UserPassesTestMixin, AccessMixin
 from django.contrib.auth.models import Group, Permission
+from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.shortcuts import render, redirect
 from django.urls.base import reverse_lazy, reverse, resolve
 
 
-# Create your models here.
-def create_profile(sender, **kwargs):
-    if kwargs["created"]:
-        user_profile = Profile.objects.create(user=kwargs["instance"])
-        user_profile.save()
-@receiver(post_save, sender=create_profile)
-class NewUser(models.Model, AbstractBaseUser):
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    email = models.EmailField(verbose_name="email", max_length=60, unique=True)
-    phone_number = models.CharField(max_length=12, unique=True, blank=True)
-    username = models.CharField(max_length=30, unique=True)
-    date_joined = models.DateTimeField(verbose_name="date joined", auto_now_add=True)
-    last_login = models.DateTimeField(verbose_name="last login", auto_now=True)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-    is_admin = models.BooleanField(default=False)
-    is_employee = models.BooleanField(default=False)
-    is_customer = models.BooleanField(default=False)
-
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["first_name", "last_name", "username", "email", "phone_number"]
-
-    def __str__(self):
-        return self.email
-
-    def has_perm(self, perm, obj=None):
-        return self.is_admin
-
-    def has_module_perms(self, app_label):
-        return True
-    
-    
 class NewUserManager(BaseUserManager):
     def create_user(self, first_name, last_name, username, email, phone_number, password=None):
         if not email:
@@ -81,6 +49,43 @@ class NewUserManager(BaseUserManager):
         user.is_staff = True
         user.save(using=self._db)
         return user
+    
+class NewUser(AbstractBaseUser):
+    # Your fields here
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'username', 'phone_number']
+
+    objects = NewUserManager()  # Ensure you have a manager for the custom user model
+    
+    class Meta:
+        verbose_name = "NewUser"
+        verbose_name_plural = "NewUsers"
+        ordering = ["-date_joined", "username", "email"]
+        
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+    
+    def get_absolute_url(self):
+        return reverse("profile", kwargs={"pk": self.pk})
+    
+    def has_perm(self, perm, obj=None):
+        return self.is_admin
+    
+    def has_module_perms(self, app_label):
+        return True
+    
+    @property
+    def is_staff(self):
+        return self.is_admin
+
+
+
+@receiver(post_save, sender=NewUser)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+    
 
 class Address(models.Model):
     user = models.ForeignKey(NewUser, on_delete=models.CASCADE)
@@ -101,8 +106,8 @@ class Address(models.Model):
             _type_: returns the longitude and latitude of the address.
         """
         return self.longitude, self.latitude
-    
-@receiver(post_save, sender=NewUser)
+
+
 class Customer(models.Model):
     user = models.OneToOneField(NewUser, on_delete=models.CASCADE, primary_key=True)
     address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True)
@@ -114,7 +119,7 @@ class Customer(models.Model):
         return f"{self.user.first_name} {self.user.last_name}"
 
 
-class Employee(models.Model, PermissionRequiredMixin, LoginRequiredMixin):
+class Employee(models.Model):
     user = models.OneToOneField(NewUser, on_delete=models.CASCADE, primary_key=True)
     address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
@@ -122,12 +127,14 @@ class Employee(models.Model, PermissionRequiredMixin, LoginRequiredMixin):
     
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
-    
+
+
+
 def upload_yard_pics(instance, filename):
     return f"uploads/yard_pics/{instance.customer.user.pk}_{instance.customer.user.username}_{filename}"    
 
-@receiver(post_save, sender=Customer.user)
-class Yard(models.Model, PermissionRequiredMixin, LoginRequiredMixin):
+
+class Yard(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
     size = models.FloatField(max_length=10)
@@ -157,7 +164,7 @@ def upload_job_pics(instance, filename):
     return f"uploads/job_pics/{instance.employee.user.pk}_{instance.employee.user.username}_{filename}"
 
 
-class Route(models.Model, PermissionRequiredMixin, LoginRequiredMixin):
+class Route(models.Model):
     route_id = models.CharField(primary_key=True, max_length=5, unique=True, blank=False, null=False)
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     yards = models.ManyToManyField(Yard)
@@ -190,7 +197,7 @@ def upload_profile_pics(instance, filename):
     return f"uploads/profile_pics/{instance.user.pk}_{instance.user.username}_{filename}"
 
 @receiver(post_save, sender=NewUser)
-class Profile(models.Model, PermissionRequiredMixin, LoginRequiredMixin):
+class Profile(models.Model):
     profile_type = models.CharField(choices=[("customer", "Customer"), ("employee", "Employee")], max_length=10, blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
     profile_pic = models.ImageField(default="images/defaults/grey_default_profile_pic.png", upload_to=upload_profile_pics)
